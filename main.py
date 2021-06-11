@@ -1,5 +1,6 @@
 import random
 import turtle
+import time
 from PyDictionary import PyDictionary
 
 
@@ -187,12 +188,14 @@ def play():
         if progress == len(word) - 1:
             print(word)
             print("You Won!")
+            time.sleep(5)
             return()
     stringy = " ".join(blanks)
     if lives == 0:
         print(stringy)
         print("You Lost")
         print("The Word is: " + word)
+        time.sleep(5)
         return()
 
     play()
