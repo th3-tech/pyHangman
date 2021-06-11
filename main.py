@@ -1,9 +1,7 @@
 import random
 import turtle
 from PyDictionary import PyDictionary
-wn = turtle.Screen()
-wn.title("Stickman")
-wn.setup(width=600, height=300)
+
 
 
 def makeHealth(health):
@@ -131,6 +129,11 @@ def draw():
 
 used = []
 
+turtleQ = input('Would you like to use the turtle? (y/n) ').upper()
+if 'Y' in turtleQ:
+    wn = turtle.Screen()
+    wn.title("Stickman")
+    wn.setup(width=600, height=300)
 def play():
     global lives
     hintnumber = []
@@ -143,7 +146,7 @@ def play():
     print("You have used the letter(s)", used, "\n")
     if lives < 4:
       print('You can now sacrifise one life for a hint by typing "hint", which will give you one unguessed space\n')
-    guess = input('Guess a single letter, or type "define" to get the defintion \n(This only works for common words, for some words it will return an error) \n \n').upper()
+    guess = input('Guess a single letter, or type "define" to get the defintion for one life\n \n').upper()
     
     if guess == "HINT" and lives < 4:
       for hintLetter in range(len(word)):
@@ -153,22 +156,30 @@ def play():
       blanks[giveLetter] = word[giveLetter]
 
 
-    if guess == "DEFINE":
+    elif guess == "DEFINE":
       print("\n")
-      print(PyDictionary.meaning(word))
-      deathCondition = False
+      try:
+          print(PyDictionary.meaning(word).value)
+      except (AttributeError, IndexError):
+          print('Not in dictionary')
+          deathCondition = False
 
-    for guessLetters in word:
-        guesses += 1
-        if guess == word[guesses]:
-            blanks[guesses] = guess
-            deathCondition = False
-    
+    elif len(guess) == 1 and not guess in used:
+        for guessLetters in word:
+            guesses += 1
+            if guess == word[guesses]:
+                blanks[guesses] = guess
+                deathCondition = False
+    else:
+        print("Please input a single letter you have not used yet")
+        deathCondition = False
+        
     if deathCondition == True:
         lives -= 1
         deathCondition = False
         used.append(guess)
-        draw()
+        if 'Y' in turtleQ:
+            draw()
     
     for winCondition in range(len(word)):
         if blanks[winCondition] != "_":
@@ -185,5 +196,4 @@ def play():
         return()
 
     play()
-
 play()
